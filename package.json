@@ -10,8 +10,5 @@
   "license": "ISC",
   "prettier": {
     "trailingComma": "es5"
-  },
-  "dependencies": {
-    "handlebars": "^4.7.7"
   }
 }
