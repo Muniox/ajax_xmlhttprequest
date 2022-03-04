@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AJAX O.G.</title>
+  </head>
+  <body>
+    <header>
+      <h1>AJAX XMLHttpRequest</h1>
+    </header>
+
+    <main id="main">
+      <!-- put content here -->
+    </main>
+
+    <script type="text/javascript" defer>
+      //podajemy adres gdzie leżą nasze dane albo na jaki adres wysyła dane serwer, czyli po tym adresie dostajemy JSON`a
+      let url = "https://jsonplaceholder.typicode.com/users";
+
+      //tworzymy nowy obiekt AJAX reqest pod zmienną xhr
+      let xhr = new XMLHttpRequest();
+
+      //otwieramy nasz strumyk do serwera z trzema zmiennymi [GET - chcemy coś pobrać z serwera, url - nasz sciezka do JSONA, true - zeby nasza funkcja działała asynchronicznie]
+      xhr.open("GET", url, true);
+
+      //wywołujemy onreadystatechange i czekamy na state 4 zeby dostac pelna odpowiedz z serwera
+      //onereadystatechange vs onlode - onlode jest wysyłany tylko raz wowczas gdy request zakonczy sie powodzeniem, jeśli nie jesteśmy zainteresowani dodatkową detekcją stanow, mozemy uzyć onload
+      xhr.onreadystatechange = function () {
+        // 2- request sent, 3 - something back, 4- full response
+        console.log(xhr.readyState); //2 3 4
+
+        //przy onload nie potrzeba readyState
+        if (xhr.readyState === 4) {
+          // 200 to response poprawny serwera, niestety jak otrzymamy inny status niz 200 pokaze tylko ze cos poszło nie tak xD
+          if (xhr.status === 200) {
+            console.log("działa");
+            console.log(
+              //parsujemy JSON'a żeby wyświetlić go zapomocą console.table, w ten sposob otrzymujemy piekną tabelkę w consoli
+              JSON.parse(xhr.responseText)
+            );
+            // jesli mamy state 4 i status od serwera 200 wykonujemy funkcje, która parsuje i wykonuje funkcje for each tworzac element z id oraz name oraz dodając go za kazdym razem do main (append w tej pętli to bardzo zła praktyka!!!)
+            // przy starszych przegladarkach nalezy uzywać responseText ponieważ sam response nie zadziała (IE)
+            outputUsers(xhr.responseText);
+          } else {
+            console.log("coś poszło nie tak");
+          }
+        }
+      };
+
+      //informuje nas o błędzie jeśli jakiś powstał przy onreadystatechange, błąd pojawi się w konsoli na żółto
+      //nie zadziała przy onload
+      xhr.onerror = function (err) {
+        console.warn(err);
+      };
+
+      //send służy do wysyłanie metodą POST na serwer, ale z jakiejś przyczyny po prostu musi być przy GET aby wykonać zapytanie AJAX
+      xhr.send(null);
+
+      //ta funkcja służy do stworzenia naszego p a pożniej dodanie do niego id oraz name oraz dodając go za kazdym razem do main (append w tej pętli to bardzo zła praktyka!!!)
+      function outputUsers(str) {
+        let data = JSON.parse(str);
+        //wybieramy main jako element w którym będziemy wyświetlać dane
+        let main = document.getElementById("main");
+
+        data.forEach(function (element) {
+          let p = document.createElement("p");
+          p.textContent = element.id + " " + element.name;
+          main.appendChild(p);
+        });
+      }
+    </script>
+  </body>
+</html>

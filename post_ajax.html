@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AJAX O.G.</title>
+  </head>
+  <body>
+    <header>
+      <h1>AJAX XMLHttpRequest</h1>
+    </header>
+
+    <main id="main">
+      <!-- put content here -->
+    </main>
+
+    <script type="text/javascript" defer>
+      //podajemy adres gdzie leżą nasze dane albo na jaki adres wysyła dane serwer, czyli po tym adresie dostajemy JSON`a
+      let url = "https://jsonplaceholder.typicode.com/users";
+
+      //tworzymy nowy obiekt AJAX reqest pod zmienną xhr
+      let xhr = new XMLHttpRequest();
+
+      //otwieramy nasz strumyk do serwera z trzema zmiennymi [GET - chcemy coś pobrać z serwera, url - nasz sciezka do JSONA, true - zeby nasza funkcja działała asynchronicznie]
+      xhr.open("POST", url, true);
+
+      //za pomocą konstruktora FormData.append z łatwością tworzymy parę klucz:wartość, append jako jedyna działa w IE
+      fd = new FormData();
+      fd.append("firstName", "Jesse"); //FormData Object
+      fd.append("lastName", "Custer"); //FormData Object
+
+      //wywołujemy onreadystatechange i czekamy na state 4 zeby dostac pelna odpowiedz z serwera
+      xhr.onreadystatechange = function () {
+        // 0 - not send
+        // 2- request sent, 3 - something back/loading, 4- full response
+        console.log(xhr.readyState); //2 3 4
+
+        if (xhr.readyState === 4) {
+          // 200 to response poprawny serwera, oraz kilka innych zeby bardziej dopasować się do odpowiedzi serwera przy metodzie POST
+          switch (xhr.status) {
+            case 200:
+            case 304:
+              console.log("OK or Not Modified (cached)", xhr.status);
+              break;
+            case 201:
+              console.log("Created", xhr.status);
+              //wybieramy main jako element w którym będziemy wyświetlać dane
+              let main = document.getElementById("main");
+              main.textContent = xhr.responseText;
+              break;
+            case 403:
+              console.log("Not Authorized", xhr.status);
+              break;
+            case 404:
+              console.log("Not Found", xhr.status);
+              break;
+            case 500:
+              console.log("Server Side Error", xhr.status);
+              break;
+            default:
+              console.log("Some other code:", xhr.status);
+          }
+        }
+      };
+
+      //informuje nas o błędzie jeśli jakiś powstał przy onreadystatechange, błąd pojawi się w konsoli na żółto
+      xhr.onerror = function (err) {
+        console.warn(err);
+      };
+
+      //send służy do wysyłanie metodą POST na serwer
+      xhr.send(fd);
+    </script>
+  </body>
+</html>

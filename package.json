@@ -1,0 +1,17 @@
+{
+  "name": "more-ajax",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ajax.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "prettier": {
+    "trailingComma": "es5"
+  },
+  "dependencies": {
+    "handlebars": "^4.7.7"
+  }
+}
